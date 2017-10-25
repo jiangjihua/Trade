@@ -1,0 +1,5 @@
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\Common\bin\Debug\Common.exe.config
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\Common\bin\Debug\Common.exe
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\Common\bin\Debug\Common.pdb
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\Common\obj\Debug\Common.exe
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\Common\obj\Debug\Common.pdb

@@ -1,0 +1,12 @@
+c:\users\administrator\documents\visual studio 2013\Projects\SlippageHunter\SlippageHunter\bin\Debug\SlippageHunter.exe.config
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\bin\Debug\SlippageHunter.exe.config
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\bin\Debug\SlippageHunter.exe
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\bin\Debug\SlippageHunter.pdb
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\bin\Debug\CTP.dll
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\obj\Debug\SlippageHunter.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\obj\Debug\SlippageHunter.exe
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\obj\Debug\SlippageHunter.pdb
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\bin\Debug\Common.exe
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\bin\Debug\Common.pdb
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\bin\Debug\thostmduserapi.dll
+C:\Users\Administrator\Documents\GitHub\Trade\SlippageHunter\SlippageHunter\bin\Debug\thosttraderapi.dll
