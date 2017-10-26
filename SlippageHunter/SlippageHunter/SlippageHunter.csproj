@@ -46,9 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountInfo.cs" />
+    <Compile Include="CTPExtension.cs" />
     <Compile Include="CTPMarketDataProvider.cs" />
     <Compile Include="CTPTrader.cs" />
     <Compile Include="ISubscriber.cs" />
+    <Compile Include="OrderPlacer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TradeFramework.cs" />

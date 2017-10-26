@@ -14,6 +14,7 @@ namespace JiangJihua.SlippageHunter
         private ThostFtdcInstrumentField instrument;
         private TradeFramework frame;
         private ThostFtdcDepthMarketDataField lastQuote;
+        private int closeTimeout = 1000;
 
         public int Volume { get; set; }
 
@@ -61,7 +62,7 @@ namespace JiangJihua.SlippageHunter
             {
                 if (Buy(targetPrice))
                 {
-                    if (Sell(targetPrice + instrument.PriceTick, 500))
+                    if (Sell(targetPrice + instrument.PriceTick, closeTimeout))
                     {
                         SellImmediately();
                     }
@@ -71,7 +72,7 @@ namespace JiangJihua.SlippageHunter
             {
                 if (SellShort(targetPrice))
                 {
-                    if (BuyToCover(targetPrice - instrument.PriceTick, 500))
+                    if (BuyToCover(targetPrice - instrument.PriceTick, closeTimeout))
                     {
                         BuyToCoverImmediatley();
                     }
@@ -80,29 +81,49 @@ namespace JiangJihua.SlippageHunter
 
         }
 
-        private void BuyToCoverImmediatley()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool BuyToCover(double p1, int p2)
-        {
-            throw new NotImplementedException();
-        }
 
         private bool SellShort(double targetPrice)
         {
-            throw new NotImplementedException();
-        }
+            ThostFtdcInputOrderField order = frame.CreateOrder();
+            order.CombOffsetFlag_0 = EnumOffsetFlagType.Open;
+            order.Direction = EnumDirectionType.Sell;
+            order.InstrumentID = instrumentID;
+            order.VolumeTotalOriginal = Volume;
+            order.LimitPrice = targetPrice;
+            order.StopPrice = targetPrice;
+            order.ContingentCondition = EnumContingentConditionType.Immediately;
+            //order.VolumeCondition = EnumVolumeConditionType.CV;
 
-        private void SellImmediately()
-        {
-            throw new NotImplementedException();
+            return PlaceOrder(order);
         }
-
-        private bool Sell(double p1, int timeout)
+        private bool BuyToCover(double price, int timeout)
         {
-            throw new NotImplementedException();
+            ThostFtdcInputOrderField order = frame.CreateOrder();
+            order.CombOffsetFlag_0 = EnumOffsetFlagType.CloseToday;
+            order.Direction = EnumDirectionType.Buy;
+            order.InstrumentID = instrumentID;
+            order.VolumeTotalOriginal = Volume;
+            order.LimitPrice = price;
+            order.StopPrice = price;
+            order.ContingentCondition = EnumContingentConditionType.Immediately;
+            //order.VolumeCondition = EnumVolumeConditionType.CV;
+
+            return PlaceOrder(order, timeout);
+
+        }
+        private bool BuyToCoverImmediatley()
+        {
+            ThostFtdcInputOrderField order = frame.CreateOrder();
+            order.CombOffsetFlag_0 = EnumOffsetFlagType.CloseToday;
+            order.Direction = EnumDirectionType.Buy;
+            order.InstrumentID = instrumentID;
+            order.VolumeTotalOriginal = Volume;
+            order.LimitPrice = lastQuote.UpperLimitPrice;
+            order.StopPrice = lastQuote.UpperLimitPrice;
+            order.ContingentCondition = EnumContingentConditionType.Immediately;
+            //order.VolumeCondition = EnumVolumeConditionType.CV;
+
+            return PlaceOrder(order);
         }
 
         private bool Buy(double targetPrice)
@@ -115,19 +136,60 @@ namespace JiangJihua.SlippageHunter
             order.LimitPrice = targetPrice;
             order.StopPrice = targetPrice;
             order.ContingentCondition = EnumContingentConditionType.Immediately;
-            order.VolumeCondition = EnumVolumeConditionType.CV;
+            //order.VolumeCondition = EnumVolumeConditionType.CV;
 
-            System.Threading.AutoResetEvent autoResetEvent = new System.Threading.AutoResetEvent(false);
-            frame.CtpTrader.OnRtnOrder += (pOrder) =>
-            {
-            };
-            frame.CtpTrader.ReqOrderInsert(order);
-            autoResetEvent.WaitOne();
+            return PlaceOrder(order);
         }
-
-        void CtpTrader_OnRtnOrder(ThostFtdcOrderField pOrder)
+        private bool Sell(double price, int timeout)
         {
-            throw new NotImplementedException();
+            ThostFtdcInputOrderField order = frame.CreateOrder();
+            order.CombOffsetFlag_0 = EnumOffsetFlagType.CloseToday;
+            order.Direction = EnumDirectionType.Sell;
+            order.InstrumentID = instrumentID;
+            order.VolumeTotalOriginal = Volume;
+            order.LimitPrice = price;
+            order.StopPrice = price;
+            order.ContingentCondition = EnumContingentConditionType.Immediately;
+            //order.VolumeCondition = EnumVolumeConditionType.CV;
+
+            return PlaceOrder(order, timeout);
         }
+        private bool SellImmediately()
+        {
+            ThostFtdcInputOrderField order = frame.CreateOrder();
+            order.CombOffsetFlag_0 = EnumOffsetFlagType.CloseToday;
+            order.Direction = EnumDirectionType.Sell;
+            order.InstrumentID = instrumentID;
+            order.VolumeTotalOriginal = Volume;
+            order.LimitPrice = lastQuote.LowerLimitPrice;
+            order.StopPrice = lastQuote.LowerLimitPrice;
+            order.ContingentCondition = EnumContingentConditionType.Immediately;
+            //order.VolumeCondition = EnumVolumeConditionType.CV;
+
+            return PlaceOrder(order);
+        }
+
+        /// <summary>
+        /// 下单、超时撤单
+        /// </summary>
+        /// <param name="order"></param>
+        /// <param name="timeout"></param>
+        /// <returns></returns>
+        private bool PlaceOrder(ThostFtdcInputOrderField order, int timeout)
+        {
+            using (var helper = new OrderPlacer(this.frame))
+            {
+                return helper.PlaceOrder(order, timeout);
+            }
+        }
+
+        private bool PlaceOrder(ThostFtdcInputOrderField order)
+        {
+            using (var helper = new OrderPlacer(this.frame))
+            {
+                return helper.PlaceOrder(order);
+            }
+        }
+
     }
 }
