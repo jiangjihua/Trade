@@ -62,7 +62,7 @@ namespace JiangJihua.SlippageHunter
             {
                 if (Buy(targetPrice))
                 {
-                    if (Sell(targetPrice + instrument.PriceTick, closeTimeout))
+                    if (!Sell(targetPrice + instrument.PriceTick, closeTimeout))
                     {
                         SellImmediately();
                     }
@@ -72,7 +72,7 @@ namespace JiangJihua.SlippageHunter
             {
                 if (SellShort(targetPrice))
                 {
-                    if (BuyToCover(targetPrice - instrument.PriceTick, closeTimeout))
+                    if (!BuyToCover(targetPrice - instrument.PriceTick, closeTimeout))
                     {
                         BuyToCoverImmediatley();
                     }

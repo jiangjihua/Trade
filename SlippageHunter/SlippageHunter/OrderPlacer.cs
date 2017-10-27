@@ -51,7 +51,7 @@ namespace JiangJihua.SlippageHunter
         /// <returns></returns>
         public bool PlaceOrder(ThostFtdcInputOrderField order, int timeout)
         {
-            isSuccess = false;
+            isSuccess = true;
 
             autoResetEventOrderCompleted = new AutoResetEvent(false);
             frame.CtpTrader.OnRtnOrder += CtpTrader_OnRtnOrder;
@@ -60,27 +60,31 @@ namespace JiangJihua.SlippageHunter
             frame.CtpTrader.ReqOrderInsert(order);
 
             var isTimeout = !autoResetEventOrderCompleted.WaitOne(timeout);
-            frame.CtpTrader.OnRtnOrder -= CtpTrader_OnRtnOrder;
 
             if (isTimeout)
             {
                 isSuccess = false;
                 frame.CtpTrader.OnRspOrderAction += CtpTrader_OnRspOrderAction;
-                frame.CtpTrader.ReqOrderAction(new ThostFtdcInputOrderActionField()
-                {
-                    ActionFlag = EnumActionFlagType.Delete,
-                    BrokerID = orderOnWay.BrokerID,
-                    InvestorID = orderOnWay.InvestorID,
-                    InstrumentID = orderOnWay.InstrumentID,
-                    FrontID = orderOnWay.FrontID,
-                    SessionID = orderOnWay.SessionID,
-                    OrderSysID = orderOnWay.OrderSysID,
-                    OrderRef = orderOnWay.OrderRef,
-                    ExchangeID = orderOnWay.ExchangeID,
-                });
+                var cancelOrder = new ThostFtdcInputOrderActionField()
+                                {
+                                    ActionFlag = EnumActionFlagType.Delete,
+                                    BrokerID = orderOnWay.BrokerID,
+                                    InvestorID = orderOnWay.InvestorID,
+                                    InstrumentID = orderOnWay.InstrumentID,
+                                    FrontID = orderOnWay.FrontID,
+                                    SessionID = orderOnWay.SessionID,
+                                    OrderSysID = orderOnWay.OrderSysID,
+                                    OrderRef = orderOnWay.OrderRef,
+                                    ExchangeID = orderOnWay.ExchangeID,
+                                };
+                Console.WriteLine("撤单。({0})", cancelOrder.ToString2());
+                frame.CtpTrader.ReqOrderAction(cancelOrder);
 
-                //autoResetEventOrderCompleted.WaitOne();
+                autoResetEventOrderCompleted.WaitOne();
             }
+
+            frame.CtpTrader.OnRtnOrder -= CtpTrader_OnRtnOrder;
+
             return isSuccess;
         }
         private void CtpTrader_OnRtnOrder(ThostFtdcOrderField pOrder)
