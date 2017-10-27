@@ -14,7 +14,7 @@ namespace JiangJihua.SlippageHunter
         private ThostFtdcInstrumentField instrument;
         private TradeFramework frame;
         private ThostFtdcDepthMarketDataField lastQuote;
-        private int closeTimeout = 1000;
+        private int closeTimeout = 5000;
 
         public int Volume { get; set; }
 
